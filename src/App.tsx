@@ -8,7 +8,6 @@ import {
   XCircle,
   ArrowRight,
   ChevronLeft,
-  Menu,
   MessageSquareShare,
   Github as GithubIcon,
   Loader2,

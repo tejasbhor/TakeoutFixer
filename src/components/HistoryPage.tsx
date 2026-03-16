@@ -119,22 +119,22 @@ export default function HistoryPage() {
                             >
                                 <div className={cn(
                                     "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-                                    run.dry_run ? "bg-amber-500/10 text-amber-500" : "bg-emerald-500/10 text-emerald-500"
+                                    run.dryRun ? "bg-amber-500/10 text-amber-500" : "bg-emerald-500/10 text-emerald-500"
                                 )}>
-                                    {run.dry_run ? <Search className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                                    {run.dryRun ? <Search className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between mb-0.5">
                                         <span className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>
-                                            {run.dry_run ? 'Scan Record' : 'Repair Job'}
+                                            {run.dryRun ? 'Scan Record' : 'Repair Job'}
                                         </span>
                                         <span className="text-[10px] font-bold opacity-40 uppercase tracking-tighter shrink-0 ml-4">
-                                            {run.processed_ok} Saved
+                                            {run.processedOk} Saved
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                                         <Calendar className="w-3 h-3" />
-                                        <span>{formatDate(run.run_date)}</span>
+                                        <span>{formatDate(run.runDate)}</span>
                                     </div>
                                 </div>
                                 <ChevronRight className={cn(
@@ -159,16 +159,16 @@ export default function HistoryPage() {
                                     <div className="flex items-center gap-4">
                                         <div className={cn(
                                             "w-14 h-14 rounded-2xl flex items-center justify-center",
-                                            selectedRun.dry_run ? "bg-amber-500/10 text-amber-500" : "bg-emerald-500/10 text-emerald-500"
+                                            selectedRun.dryRun ? "bg-amber-500/10 text-amber-500" : "bg-emerald-500/10 text-emerald-500"
                                         )}>
-                                            {selectedRun.dry_run ? <Search className="w-7 h-7" /> : <CheckCircle2 className="w-7 h-7" />}
+                                            {selectedRun.dryRun ? <Search className="w-7 h-7" /> : <CheckCircle2 className="w-7 h-7" />}
                                         </div>
                                         <div>
                                             <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                                                {selectedRun.dry_run ? 'Scan Summary' : 'Run Details'}
+                                                {selectedRun.dryRun ? 'Scan Summary' : 'Run Details'}
                                             </h3>
                                             <p className="text-sm opacity-60" style={{ color: 'var(--text-secondary)' }}>
-                                                {formatDate(selectedRun.run_date)}
+                                                {formatDate(selectedRun.runDate)}
                                             </p>
                                         </div>
                                     </div>
@@ -184,7 +184,7 @@ export default function HistoryPage() {
                                     <DetailTile 
                                         icon={<FileCheck className="w-4 h-4" />}
                                         label="Processed OK"
-                                        value={selectedRun.processed_ok}
+                                        value={selectedRun.processedOk}
                                         color="emerald"
                                     />
                                     <DetailTile 
@@ -196,13 +196,13 @@ export default function HistoryPage() {
                                     <DetailTile 
                                         icon={<Clock className="w-4 h-4" />}
                                         label="Duration"
-                                        value={`${selectedRun.elapsed_seconds.toFixed(1)}s`}
+                                        value={`${selectedRun.elapsedSeconds.toFixed(1)}s`}
                                         color="blue"
                                     />
                                     <DetailTile 
                                         icon={<Trash2 className="w-4 h-4" />}
                                         label="Duplicates"
-                                        value={selectedRun.duplicates_removed}
+                                        value={selectedRun.duplicatesRemoved}
                                         color="zinc"
                                     />
                                 </div>
@@ -214,13 +214,13 @@ export default function HistoryPage() {
                                             <span>Target Location</span>
                                         </div>
                                         <p className="text-xs break-all leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                                            {selectedRun.output_path || 'Analyze Only Mode'}
+                                            {selectedRun.outputPath || 'Analyze Only Mode'}
                                         </p>
                                     </div>
 
-                                    {selectedRun.output_path && (
+                                    {selectedRun.outputPath && (
                                         <button 
-                                            onClick={() => openOutputFolder(selectedRun.output_path)}
+                                            onClick={() => openOutputFolder(selectedRun.outputPath)}
                                             className="w-full fluent-btn-secondary flex items-center justify-center gap-3 py-3"
                                         >
                                             <ArrowUpRight className="w-4 h-4" />
