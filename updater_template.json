@@ -5,19 +5,19 @@
   "platforms": {
     "windows-x86_64": {
       "signature": "... (signature from .sig file) ...",
-      "url": "https://github.com/tejas/TakeoutFixer/releases/download/v1.0.0/TakeoutFixer_1.0.0_x64_en-US.msi.zip"
+      "url": "https://github.com/tejasbhor/TakeoutFixer/releases/download/v1.0.0/TakeoutFixer_1.0.0_x64_en-US.msi.zip"
     },
     "darwin-x86_64": {
       "signature": "... (signature) ...",
-      "url": "https://github.com/tejas/TakeoutFixer/releases/download/v1.0.0/TakeoutFixer_1.0.0_x64.app.tar.gz"
+      "url": "https://github.com/tejasbhor/TakeoutFixer/releases/download/v1.0.0/TakeoutFixer_1.0.0_x64.app.tar.gz"
     },
     "darwin-aarch64": {
       "signature": "... (signature) ...",
-      "url": "https://github.com/tejas/TakeoutFixer/releases/download/v1.0.0/TakeoutFixer_1.0.0_aarch64.app.tar.gz"
+      "url": "https://github.com/tejasbhor/TakeoutFixer/releases/download/v1.0.0/TakeoutFixer_1.0.0_aarch64.app.tar.gz"
     },
     "linux-x86_64": {
       "signature": "... (signature) ...",
-      "url": "https://github.com/tejas/TakeoutFixer/releases/download/v1.0.0/takeout-fixer_1.0.0_amd64.AppImage.tar.gz"
+      "url": "https://github.com/tejasbhor/TakeoutFixer/releases/download/v1.0.0/takeout-fixer_1.0.0_amd64.AppImage.tar.gz"
     }
   }
 }

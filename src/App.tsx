@@ -97,6 +97,11 @@ export default function App() {
     }
   }, [theme]);
 
+  // Check for updates on mount
+  useEffect(() => {
+    handleCheckUpdate(false);
+  }, []);
+
   // Listen for progress events from Rust
   useEffect(() => {
     let unlisten: () => void;
