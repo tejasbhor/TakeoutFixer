@@ -72,10 +72,10 @@ jobs:
         run: npx tauri android init --ci
 
       - name: Build the app
+        if: "!matrix.settings.mobile"
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NDK_HOME: ${{ steps.setup-android.outputs.sdk-path }}/ndk/25.1.8937393
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'TakeoutFixer v__VERSION__'
@@ -84,6 +84,12 @@ jobs:
           prerelease: false
           args: ${{ matrix.settings.args }}
           tauriScript: ${{ matrix.settings.tauriScript }}
+
+      - name: Build Android app
+        if: matrix.settings.mobile
+        run: npx tauri android build --apk
+        env:
+          NDK_HOME: ${{ steps.setup-android.outputs.sdk-path }}/ndk/25.1.8937393
 
       - name: Upload Android Artifacts
         if: matrix.settings.mobile

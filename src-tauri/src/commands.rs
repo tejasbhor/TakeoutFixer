@@ -29,6 +29,7 @@ pub async fn start_processing(config: JobConfig, window: Window, app: AppHandle)
     tokio::spawn(async move {
         while let Some(event) = rx.recv().await {
             // Taskbar progress (0-100 scale in Tauri v2 needs to be normalized or used as state)
+            #[cfg(desktop)]
             let percent = if event.total > 0 {
                 (event.current as f64 / event.total as f64 * 100.0) as u64
             } else {
