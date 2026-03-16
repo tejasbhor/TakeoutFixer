@@ -25,6 +25,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
+            #[allow(unused_variables)]
             let window = tauri::Manager::get_webview_window(app, "main").unwrap();
 
             #[cfg(target_os = "windows")]
@@ -36,7 +37,7 @@ pub fn run() {
             #[cfg(target_os = "macos")]
             {
                 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
-                let _ = apply_vibrancy(&window, NSVisualEffectMaterial::UnderWindowBackground, None, None);
+                let _ = apply_vibrancy(&_window, NSVisualEffectMaterial::UnderWindowBackground, None, None);
             }
 
             Ok(())

@@ -228,6 +228,7 @@ fn dir_size(path: &Path) -> u64 {
         .sum()
 }
 
+#[allow(unused_variables)]
 fn free_space(path: &Path) -> Result<u64> {
     // Use statvfs on Unix, GetDiskFreeSpaceEx on Windows — simplified cross-platform
     #[cfg(target_os = "windows")]

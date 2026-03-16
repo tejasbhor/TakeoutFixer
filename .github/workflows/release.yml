@@ -76,3 +76,13 @@ jobs:
           prerelease: false
           args: ${{ matrix.settings.args }}
           mobile: ${{ matrix.settings.mobile || false }}
+
+      - name: Upload Android Artifacts
+        if: matrix.settings.mobile
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            src-tauri/gen/android/app/build/outputs/apk/universal/release/*.apk
+            src-tauri/gen/android/app/build/outputs/bundle/universalRelease/*.aab
+          tag_name: ${{ github.ref_name }}
+          draft: true
