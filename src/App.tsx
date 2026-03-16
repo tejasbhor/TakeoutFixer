@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { listen } from "@tauri-apps/api/event";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  FolderSync, 
   Settings, 
   History, 
   LayoutDashboard, 
@@ -17,6 +16,7 @@ import {
   Search,
   CheckCircle2
 } from "lucide-react";
+import Logomark from "./assets/logo.png";
 import { JobConfig, ProgressEvent, RunSummary, ValidationResult } from "./types";
 import { validateInput, startProcessing, cancelProcessing } from "./lib/tauri";
 import { 
@@ -248,31 +248,46 @@ export default function App() {
         sidebarCollapsed ? "w-16" : "w-64"
       )}>
         <div className={cn(
-            "pt-6 px-4 mb-8 flex items-center",
-            sidebarCollapsed ? "justify-center" : "gap-1"
+            "pt-6 px-4 mb-8 flex flex-col",
+            sidebarCollapsed ? "items-center" : "items-start"
         )}>
-          <button 
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="hamburger-btn"
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <Menu className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-3 w-full mb-4">
+            <button 
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hamburger-btn"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <Menu className="w-4 h-4" />
+            </button>
 
-          {!sidebarCollapsed && (
-            <div className="flex items-center gap-2 px-2 animate-in fade-in slide-in-from-left-4 duration-500">
-              <div 
-                className="w-7 h-7 rounded-lg flex items-center justify-center shadow-lg"
-                style={{ backgroundColor: 'var(--fluent-accent)', boxShadow: '0 4px 12px var(--ring-focus)' }}
-              >
-                <FolderSync className="w-3.5 h-3.5 text-white" />
+            {!sidebarCollapsed && (
+              <div className="flex items-center gap-2 overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500">
+                <div className="overflow-hidden">
+                  <h1 className="font-extrabold text-[10px] leading-tight truncate" style={{ color: 'var(--text-primary)' }}>{APP_CONFIG.name}</h1>
+                  <p className="text-[7px] uppercase tracking-[0.2em] text-zinc-500 font-bold truncate opacity-60">Metadata Sync</p>
+                </div>
               </div>
-              <div className="overflow-hidden">
-                <h1 className="font-extrabold text-[10px] leading-tight truncate" style={{ color: 'var(--text-primary)' }}>{APP_CONFIG.name}</h1>
-                <p className="text-[7px] uppercase tracking-[0.2em] text-zinc-500 font-bold truncate opacity-60">Metadata Sync</p>
-              </div>
+            )}
+          </div>
+
+          <div className={cn(
+            "flex items-center transition-all duration-500",
+            sidebarCollapsed ? "justify-center w-full" : "px-2"
+          )}>
+            <div 
+              className={cn(
+                "rounded-xl flex items-center justify-center shadow-2xl transition-all duration-500 overflow-hidden bg-white/5 border border-white/10",
+                sidebarCollapsed ? "w-8 h-8" : "w-10 h-10"
+              )}
+            >
+              <img src={Logomark} alt="TakeoutFixer Logo" className="w-[80%] h-[80%] object-contain" />
             </div>
-          )}
+            {!sidebarCollapsed && (
+              <div className="ml-3 animate-in fade-in zoom-in-95 duration-500">
+                <span className="text-[10px] font-black tracking-widest text-[#8e44ff] uppercase">Release Ready</span>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="space-y-1 flex-1 px-3">
