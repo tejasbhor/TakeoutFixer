@@ -1,4 +1,6 @@
-use tauri::{AppHandle, Window, Emitter, window::ProgressBarState, window::ProgressBarStatus};
+use tauri::{AppHandle, Window, Emitter};
+#[cfg(desktop)]
+use tauri::window::{ProgressBarState, ProgressBarStatus};
 use tokio::sync::mpsc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
@@ -33,6 +35,7 @@ pub async fn start_processing(config: JobConfig, window: Window, app: AppHandle)
                 0
             };
             
+            #[cfg(desktop)]
             let _ = window_clone.set_progress_bar(ProgressBarState {
                 progress: Some(percent),
                 status: Some(ProgressBarStatus::Normal),
@@ -42,6 +45,7 @@ pub async fn start_processing(config: JobConfig, window: Window, app: AppHandle)
         }
         
         // Reset progress bar on finish
+        #[cfg(desktop)]
         let _ = window_clone.set_progress_bar(ProgressBarState {
             progress: None,
             status: Some(ProgressBarStatus::None),
