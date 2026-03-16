@@ -37,6 +37,20 @@ jobs:
         with:
           targets: ${{ matrix.settings.platform == 'ubuntu-22.04' && matrix.settings.args == '--target android' && 'aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android' || '' }}
 
+      - name: Setup Java
+        if: matrix.settings.args == '--target android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Java
+        if: matrix.settings.args == '--target android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
       - name: Android setup
         if: matrix.settings.args == '--target android'
         uses: android-actions/setup-android@v3
