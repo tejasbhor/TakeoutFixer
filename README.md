@@ -61,6 +61,7 @@ TakeoutFixer is natively compiled for:
 - **Windows**: Full support for Mica effects and Windows Long Paths.
 - **macOS**: Native architecture support for Intel and Apple Silicon (Universal) with native vibrancy.
 - **Linux**: Distributed via AppImage and Debian packages.
+- **Android**: Adaptive mobile interface with high-performance Rust processing core.
 
 ---
 
