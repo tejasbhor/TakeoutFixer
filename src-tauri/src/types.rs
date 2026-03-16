@@ -222,4 +222,5 @@ pub struct RunSummary {
     pub log_path: String,
     pub elapsed_seconds: f64,
     pub dry_run: bool,
+    pub run_date: String,
 }

@@ -16,3 +16,11 @@ export async function cancelProcessing(): Promise<void> {
 export async function openOutputFolder(path: string): Promise<void> {
     return invoke('open_output_folder', { path });
 }
+
+export async function getHistory(): Promise<RunSummary[]> {
+    return invoke('get_history');
+}
+
+export async function clearHistory(): Promise<void> {
+    return invoke('clear_history');
+}

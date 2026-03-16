@@ -157,6 +157,7 @@ pub fn run_pipeline(
     summary.total_input_files = summary.processed_ok + summary.skipped + summary.errors + summary.duplicates_removed;
     summary.elapsed_seconds = start_time.elapsed().as_secs_f64();
     summary.dry_run = config.dry_run;
+    summary.run_date = chrono::Utc::now().to_rfc3339();
 
     // Report
     let log_path = output_dir.join("processing-report.log");

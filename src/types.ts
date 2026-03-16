@@ -58,4 +58,5 @@ export interface RunSummary {
     logPath: string;
     elapsedSeconds: number;
     dryRun: boolean;
+    runDate: string;
 }

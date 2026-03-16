@@ -1,6 +1,7 @@
 pub mod types;
 pub mod pipeline;
 pub mod commands;
+pub mod history;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -9,6 +10,7 @@ pub fn run() {
         .with_env_filter(
             tracing_subscriber::EnvFilter::from_default_env()
                 .add_directive("little_exif=off".parse().unwrap())
+                .add_directive("tauri_plugin_updater=off".parse().unwrap())
         )
         .with_writer(std::io::stderr)
         .try_init()
@@ -44,6 +46,8 @@ pub fn run() {
             commands::start_processing,
             commands::cancel_processing,
             commands::open_output_folder,
+            commands::get_history,
+            commands::clear_history,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

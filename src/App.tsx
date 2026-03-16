@@ -37,11 +37,12 @@ import WarningModal from "./components/WarningModal";
 import SettingsPage from "./components/SettingsPage";
 import LegalPage from "./components/LegalPage";
 import UpdateModal from "./components/UpdateModal";
+import HistoryPage from "./components/HistoryPage";
 import { APP_CONFIG } from "./config";
 import { getUpdateMetadata } from "./lib/updater";
 import { Update } from "@tauri-apps/plugin-updater";
 
-type AppState = "idle" | "configuring" | "validating" | "processing" | "complete" | "error" | "settings" | "terms" | "privacy";
+type AppState = "idle" | "configuring" | "validating" | "processing" | "complete" | "error" | "settings" | "terms" | "privacy" | "history";
 
 export default function App() {
   const [appState, setAppState] = useState<AppState>("idle");
@@ -259,34 +260,24 @@ export default function App() {
           sidebarCollapsed ? "w-16" : "w-64"
         )}>
         <div className={cn(
-            "pt-6 px-4 mb-10 flex items-center",
-            sidebarCollapsed ? "justify-center" : "gap-3"
+            "pt-5 px-4 mb-8 flex transition-all duration-300",
+            sidebarCollapsed ? "justify-center" : "items-center gap-3"
         )}>
           <button 
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="hamburger-btn"
+            className={cn(
+                "rounded-xl flex items-center justify-center shadow-xl overflow-hidden bg-white/5 border border-white/10 shrink-0 transition-all duration-300 hover:scale-105 active:scale-95 group hover:border-[#8e44ff]/30 hover:shadow-[#8e44ff]/10",
+                sidebarCollapsed ? "w-10 h-10" : "w-8 h-8"
+            )}
             title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <Menu className="w-4 h-4" />
+            <img src={Logomark} alt="Logo" className="w-[75%] h-[75%] object-contain transition-transform duration-500 group-hover:rotate-12" />
           </button>
-
-          {!sidebarCollapsed && (
-            <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-xl overflow-hidden bg-white/5 border border-white/10 shrink-0">
-                <img src={Logomark} alt="Logo" className="w-[75%] h-[75%] object-contain" />
-              </div>
-              <div className="overflow-hidden">
-                <h1 className="font-extrabold text-[11px] leading-tight truncate" style={{ color: 'var(--text-primary)' }}>{APP_CONFIG.name}</h1>
-                <p className="text-[7.5px] uppercase tracking-[0.2em] text-zinc-500 font-bold truncate opacity-60">Metadata Sync</p>
-              </div>
-            </div>
-          )}
           
-          {sidebarCollapsed && (
-            <div className="fixed left-4 top-[88px] flex flex-col items-center gap-4">
-               <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-2xl overflow-hidden bg-white/5 border border-white/10">
-                 <img src={Logomark} alt="Logo" className="w-[75%] h-[75%] object-contain" />
-               </div>
+          {!sidebarCollapsed && (
+            <div className="overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500">
+              <h1 className="font-extrabold text-[11px] leading-tight truncate" style={{ color: 'var(--text-primary)' }}>{APP_CONFIG.name}</h1>
+              <p className="text-[7.5px] uppercase tracking-[0.2em] text-zinc-500 font-bold truncate opacity-60">Metadata Sync</p>
             </div>
           )}
         </div>
@@ -311,8 +302,9 @@ export default function App() {
           </button>
           
           <button 
-            className="nav-item w-full opacity-40 cursor-not-allowed outline-none"
-            aria-disabled="true"
+            onClick={() => appState !== 'processing' && setAppState('history')}
+            className={cn("nav-item w-full outline-none", (appState === 'history') && "active")}
+            aria-label="Past runs history"
           >
             <History className="w-4 h-4 shrink-0" />
             {!sidebarCollapsed && <span className="text-sm">Past Runs</span>}
@@ -378,8 +370,8 @@ export default function App() {
                 <img src={Logomark} alt="Logo" className="w-6 h-6 object-contain" />
             </div>
             <MobileNavItem 
-                active={false}
-                disabled
+                active={appState === 'history'} 
+                onClick={() => setAppState("history")}
                 icon={<History className="w-5 h-5" />}
                 label="History"
             />
@@ -424,6 +416,7 @@ export default function App() {
                  appState === 'processing' ? (workflow === 'analysis' ? 'Scanning' : 'Processing') : 
                  appState === 'complete' ? 'Success' : 
                  appState === 'settings' ? 'Settings' :
+                 appState === 'history' ? 'Run History' :
                  appState === 'error' ? 'System Error' : appState}
               </h2>
             </div>
@@ -593,6 +586,18 @@ export default function App() {
                     onCheckUpdate={() => handleCheckUpdate(true)}
                     isCheckingUpdate={isCheckingUpdate}
                 />
+              </motion.div>
+            )}
+
+            {appState === "history" && (
+              <motion.div 
+                key="history"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.02 }}
+                className="h-full"
+              >
+                <HistoryPage />
               </motion.div>
             )}
 

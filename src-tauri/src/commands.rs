@@ -16,7 +16,7 @@ pub async fn validate_input(paths: Vec<String>) -> Result<ValidationResult, Stri
 }
 
 #[tauri::command]
-pub async fn start_processing(config: JobConfig, window: Window) -> Result<RunSummary, String> {
+pub async fn start_processing(config: JobConfig, window: Window, app: AppHandle) -> Result<RunSummary, String> {
     CANCEL_FLAG.store(false, Ordering::Relaxed);
     
     let (tx, mut rx) = mpsc::channel::<ProgressEvent>(100);
@@ -58,7 +58,20 @@ pub async fn start_processing(config: JobConfig, window: Window) -> Result<RunSu
     .map_err(|e| e.to_string())?
     .map_err(|e| e.to_string())?;
 
+    // Save to history
+    let _ = crate::history::save_to_history(&app, &result);
+
     Ok(result)
+}
+
+#[tauri::command]
+pub async fn get_history(app: AppHandle) -> Result<Vec<RunSummary>, String> {
+    crate::history::load_history(&app)
+}
+
+#[tauri::command]
+pub async fn clear_history(app: AppHandle) -> Result<(), String> {
+    crate::history::clear_history(&app)
 }
 
 #[tauri::command]
