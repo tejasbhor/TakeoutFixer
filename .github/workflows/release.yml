@@ -19,7 +19,8 @@ jobs:
           - platform: windows-latest
             args: ""
           - platform: ubuntu-22.04 # Android Build
-            args: "--target android"
+            args: ""
+            mobile: true
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -35,28 +36,22 @@ jobs:
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.settings.platform == 'ubuntu-22.04' && matrix.settings.args == '--target android' && 'aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android' || '' }}
+          targets: ${{ matrix.settings.mobile && 'aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android' || '' }}
 
       - name: Setup Java
-        if: matrix.settings.args == '--target android'
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Java
-        if: matrix.settings.args == '--target android'
+        if: matrix.settings.mobile
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
       - name: Android setup
-        if: matrix.settings.args == '--target android'
+        id: setup-android
+        if: matrix.settings.mobile
         uses: android-actions/setup-android@v3
 
       - name: Install NDK
-        if: matrix.settings.args == '--target android'
+        if: matrix.settings.mobile
         run: sdkmanager "ndk;25.1.8937393"
 
       - name: Sync node version and setup cache
@@ -80,3 +75,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.settings.args }}
+          mobile: ${{ matrix.settings.mobile || false }}
