@@ -85,14 +85,14 @@ jobs:
         if: matrix.settings.mobile
         run: npx tauri android build --apk
         env:
-          NDK_HOME: ${{ steps.setup-android.outputs.sdk-path }}/ndk/25.1.8937393
+          NDK_HOME: ${{ runner.os == 'Linux' && '/usr/local/lib/android/sdk/ndk/25.1.8937393' || '' }}
 
       - name: Sign Android APK
         if: matrix.settings.sign
         run: |
-          # Ensure build-tools is in PATH for apksigner
-          BUILD_TOOLS_VERSION=$(ls ${{ steps.setup-android.outputs.sdk-path }}/build-tools | sort -V | tail -n 1)
-          export PATH=$PATH:${{ steps.setup-android.outputs.sdk-path }}/build-tools/$BUILD_TOOLS_VERSION
+          # Use ANDROID_HOME which is set by the setup-android action
+          BUILD_TOOLS_VERSION=$(ls $ANDROID_HOME/build-tools | sort -V | tail -n 1)
+          export PATH=$PATH:$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION
           
           # Generate a temporary keystore for this release
           keytool -genkey -v -keystore release.keystore \
