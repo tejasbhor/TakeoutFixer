@@ -49,14 +49,24 @@ export default function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light' | 'auto'>('dark');
   const [micaEnabled, setMicaEnabled] = useState(true);
-  const [platform, setPlatform] = useState<'windows' | 'macos' | 'linux' | 'other'>('windows');
+  const [platform, setPlatform] = useState<'windows' | 'macos' | 'linux' | 'android' | 'ios' | 'other'>('windows');
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
-    if (userAgent.includes('win')) setPlatform('windows');
+    if (userAgent.includes('android')) setPlatform('android');
+    else if (userAgent.includes('iphone') || userAgent.includes('ipad')) setPlatform('ios');
+    else if (userAgent.includes('win')) setPlatform('windows');
     else if (userAgent.includes('mac')) setPlatform('macos');
     else if (userAgent.includes('linux')) setPlatform('linux');
     else setPlatform('other');
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
   const [notifications, setNotifications] = useState(true);
   const [hwAcceleration, setHwAcceleration] = useState(true);
@@ -242,11 +252,12 @@ export default function App() {
             !hwAcceleration && "hw-accel-off"
         )}
     >
-      {/* Windows 11 Style Sidebar - Mica Alt */}
-      <nav className={cn(
-        "h-full flex flex-col z-20 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] sidebar-material",
-        sidebarCollapsed ? "w-16" : "w-64"
-      )}>
+      {/* Platform-specific Navigation: Sidebar (Desktop) or Bottom Bar (Mobile) */}
+      {!isMobile && (
+        <nav className={cn(
+          "h-full flex flex-col z-20 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] sidebar-material",
+          sidebarCollapsed ? "w-16" : "w-64"
+        )}>
         <div className={cn(
             "pt-6 px-4 mb-10 flex items-center",
             sidebarCollapsed ? "justify-center" : "gap-3"
@@ -347,6 +358,39 @@ export default function App() {
           </div>
         </div>
       </nav>
+      )}
+
+      {isMobile && (
+        <nav className="fixed bottom-0 left-0 right-0 h-16 bg-zinc-900/90 backdrop-blur-xl border-t border-white/5 z-50 flex items-center justify-around px-2">
+            <MobileNavItem 
+                active={appState !== 'settings' && workflow === 'repair'} 
+                onClick={() => appState !== 'processing' && resetJob('repair')}
+                icon={<LayoutDashboard className="w-5 h-5" />}
+                label="Repair"
+            />
+            <MobileNavItem 
+                active={appState !== 'settings' && workflow === 'analysis'} 
+                onClick={() => appState !== 'processing' && resetJob('analysis')}
+                icon={<Search className="w-5 h-5" />}
+                label="Scan"
+            />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-[#8e44ff] shadow-lg shadow-[#8e44ff]/30 -translate-y-4 border-4 border-zinc-900">
+                <img src={Logomark} alt="Logo" className="w-6 h-6 object-contain" />
+            </div>
+            <MobileNavItem 
+                active={false}
+                disabled
+                icon={<History className="w-5 h-5" />}
+                label="History"
+            />
+            <MobileNavItem 
+                active={appState === 'settings'} 
+                onClick={() => setAppState("settings")}
+                icon={<Settings className="w-5 h-5" />}
+                label="Setup"
+            />
+        </nav>
+      )}
 
       {/* Main Content Area - Mica Base */}
       <main className="flex-1 h-full flex flex-col relative transition-all duration-500 main-material">
@@ -360,21 +404,29 @@ export default function App() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
                   onClick={() => resetJob(workflow)}
-                  className="p-2 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-all group"
+                  className="p-2 -ml-2 rounded-lg hover:bg-white/5 text-zinc-400 hover:text-white transition-all group"
                   title="Back"
                 >
-                  <ChevronLeft className="w-5 h-5 group-active:scale-90 transition-transform" />
+                  <ChevronLeft className="w-6 h-6 group-active:scale-90 transition-transform" />
                 </motion.button>
               )}
             </AnimatePresence>
-            <h2 className="text-sm font-medium capitalize" style={{ color: 'var(--text-muted)' }}>
-              {appState === 'idle' ? (workflow === 'analysis' ? 'Scan Library' : 'New Repair') : 
-               appState === 'configuring' ? (workflow === 'analysis' ? 'Scan Options' : 'Configure Pipeline') : 
-               appState === 'processing' ? (workflow === 'analysis' ? 'Scanning' : 'Repairing') : 
-               appState === 'complete' ? 'Success' : 
-               appState === 'settings' ? 'System Preferences' :
-               appState === 'error' ? 'System Error' : appState}
-            </h2>
+            <div className="flex flex-col">
+              {isMobile && appState === 'idle' && (
+                <div className="flex items-center gap-2 mb-0.5">
+                   <img src={Logomark} alt="TF" className="w-3.5 h-3.5 object-contain" />
+                   <span className="text-[10px] font-black uppercase tracking-wider text-[#8e44ff]">TakeoutFixer</span>
+                </div>
+              )}
+              <h2 className="text-sm font-bold capitalize leading-none" style={{ color: 'var(--text-primary)' }}>
+                {appState === 'idle' ? (workflow === 'analysis' ? 'Scan Health' : 'Start Repair') : 
+                 appState === 'configuring' ? (workflow === 'analysis' ? 'Scan Options' : 'Configure') : 
+                 appState === 'processing' ? (workflow === 'analysis' ? 'Scanning' : 'Processing') : 
+                 appState === 'complete' ? 'Success' : 
+                 appState === 'settings' ? 'Settings' :
+                 appState === 'error' ? 'System Error' : appState}
+              </h2>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -406,14 +458,14 @@ export default function App() {
                 transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 className="h-full flex flex-col"
               >
-                <div className="mb-10">
-                  <h2 className="text-3xl font-bold tracking-tight mb-2" style={{ color: 'var(--text-primary)' }}>
-                    {workflow === 'analysis' ? 'Scan Library Health' : 'Initialize Repair'}
+                <div className="mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-2" style={{ color: 'var(--text-primary)' }}>
+                    {workflow === 'analysis' ? 'Scan Health' : 'Initialize Repair'}
                   </h2>
-                  <p style={{ color: 'var(--text-secondary)' }}>
+                  <p className="text-sm md:text-base opacity-70" style={{ color: 'var(--text-secondary)' }}>
                     {workflow === 'analysis' 
-                      ? 'Scan your archives to find undated files and metadata issues before repairing.' 
-                      : 'Provide the archives exported from Google Takeout to begin.'}
+                      ? 'Scan your archives to find issues before repairing.' 
+                      : 'Provide your Google Takeout .zip bundles to begin.'}
                   </p>
                 </div>
                 <div className="flex-1 min-h-[400px]">
@@ -601,4 +653,26 @@ export default function App() {
       </AnimatePresence>
     </div>
   );
+}
+
+function MobileNavItem({ active, onClick, icon, label, disabled = false }: { active: boolean, onClick?: () => void, icon: React.ReactNode, label: string, disabled?: boolean }) {
+    return (
+        <button 
+            onClick={onClick}
+            disabled={disabled}
+            className={cn(
+                "flex flex-col items-center gap-1 transition-all",
+                active ? "text-[#8e44ff]" : "text-zinc-500",
+                disabled && "opacity-20 grayscale"
+            )}
+        >
+            <div className={cn(
+                "p-1.5 rounded-lg transition-all",
+                active && "bg-[#8e44ff]/10"
+            )}>
+                {icon}
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+        </button>
+    );
 }

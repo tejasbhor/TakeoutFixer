@@ -26,7 +26,7 @@ interface SettingsPageProps {
   hwAcceleration: boolean;
   onHwAccelerationChange: (enabled: boolean) => void;
   onNavigate: (page: any) => void;
-  platform: 'windows' | 'macos' | 'linux' | 'other';
+  platform: 'windows' | 'macos' | 'linux' | 'android' | 'ios' | 'other';
   onCheckUpdate: () => void;
   isCheckingUpdate: boolean;
 }

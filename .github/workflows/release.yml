@@ -11,25 +11,39 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-22.04, windows-latest]
-    runs-on: ${{ matrix.platform }}
+        settings:
+          - platform: macos-latest
+            args: ""
+          - platform: ubuntu-22.04
+            args: ""
+          - platform: windows-latest
+            args: ""
+          - platform: ubuntu-22.04 # Android Build
+            args: "--target android"
+
+    runs-on: ${{ matrix.settings.platform }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install dependencies (Ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.settings.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          targets: ${{ matrix.settings.platform == 'ubuntu-22.04' && matrix.settings.args == '--target android' && 'aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android' || '' }}
+
+      - name: Android setup
+        if: matrix.settings.args == '--target android'
+        uses: android-actions/setup-android@v3
+
+      - name: Install NDK
+        if: matrix.settings.args == '--target android'
+        run: sdkmanager "ndk;25.1.8937393"
 
       - name: Sync node version and setup cache
         uses: actions/setup-node@v4
@@ -44,9 +58,11 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NDK_HOME: ${{ steps.setup-android.outputs.sdk-path }}/ndk/25.1.8937393
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'TakeoutFixer v__VERSION__'
-          releaseBody: 'See the assets below to download the latest version of TakeoutFixer for your platform.'
+          releaseBody: 'Ultimate Release: Download TakeoutFixer for Desktop and Android.'
           releaseDraft: true
           prerelease: false
+          args: ${{ matrix.settings.args }}
