@@ -188,16 +188,20 @@ fn deduplicate_archives(paths: Vec<PathBuf>) -> Vec<PathBuf> {
     let mut seen: std::collections::HashSet<u64> = std::collections::HashSet::new();
     let mut result = Vec::new();
     for path in paths {
-        if let Ok(mut f) = std::fs::File::open(&path) {
-            use std::io::Read;
-            let mut buf = vec![0u8; 1_048_576];
-            let n = f.read(&mut buf).unwrap_or(0);
-            let h = xxh3_64(&buf[..n]);
-            if seen.insert(h) {
+        match std::fs::File::open(&path) {
+            Ok(mut f) => {
+                use std::io::Read;
+                let mut buf = vec![0u8; 1_048_576];
+                let n = f.read(&mut buf).unwrap_or(0);
+                let h = xxh3_64(&buf[..n]);
+                if seen.insert(h) {
+                    result.push(path);
+                }
+            }
+            Err(_) => {
+                println!("Failed to open {:?} for deduplication", path);
                 result.push(path);
             }
-            println!("Failed to open {:?} for deduplication", path);
-            result.push(path);
         }
     }
     result
