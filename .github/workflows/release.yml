@@ -12,15 +12,6 @@ jobs:
       fail-fast: false
       matrix:
         settings:
-          - platform: macos-latest
-            args: ""
-            tauriScript: "npx tauri"
-          - platform: ubuntu-22.04
-            args: ""
-            tauriScript: "npx tauri"
-          - platform: windows-latest
-            args: ""
-            tauriScript: "npx tauri"
           - platform: ubuntu-22.04 # Android Build
             args: "--apk"
             mobile: true
@@ -72,6 +63,10 @@ jobs:
         if: matrix.settings.mobile
         run: npx tauri android init --ci
 
+      - name: Generate mobile icons
+        if: matrix.settings.mobile
+        run: npx tauri icon src-tauri/icons/icon.png
+
       - name: Build the app
         if: "!matrix.settings.mobile"
         uses: tauri-apps/tauri-action@v0
@@ -95,6 +90,10 @@ jobs:
       - name: Sign Android APK
         if: matrix.settings.sign
         run: |
+          # Ensure build-tools is in PATH for apksigner
+          BUILD_TOOLS_VERSION=$(ls ${{ steps.setup-android.outputs.sdk-path }}/build-tools | sort -V | tail -n 1)
+          export PATH=$PATH:${{ steps.setup-android.outputs.sdk-path }}/build-tools/$BUILD_TOOLS_VERSION
+          
           # Generate a temporary keystore for this release
           keytool -genkey -v -keystore release.keystore \
             -alias alias_name -keyalg RSA -keysize 2048 -validity 10000 \
