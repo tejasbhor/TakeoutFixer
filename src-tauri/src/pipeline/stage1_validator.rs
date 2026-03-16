@@ -38,6 +38,7 @@ pub fn validate_input(input_paths: &[String]) -> Result<ValidationResult> {
     let mut has_errors = false;
 
     for (idx, path) in paths.iter().enumerate() {
+        println!("Validating path: {:?}", path);
         if !path.exists() {
             archives.push(ArchiveInfo {
                 path: path.to_string_lossy().to_string(),
@@ -195,7 +196,7 @@ fn deduplicate_archives(paths: Vec<PathBuf>) -> Vec<PathBuf> {
             if seen.insert(h) {
                 result.push(path);
             }
-        } else {
+            println!("Failed to open {:?} for deduplication", path);
             result.push(path);
         }
     }

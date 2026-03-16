@@ -63,6 +63,18 @@ jobs:
         if: matrix.settings.mobile
         run: npx tauri android init --ci
 
+      - name: Inject Android Permissions
+        if: matrix.settings.mobile
+        run: |
+          MANIFEST="src-tauri/gen/android/app/src/main/AndroidManifest.xml"
+          # Add permissions before the <application> tag
+          sed -i '/<application/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />' $MANIFEST
+          sed -i '/<application/i \    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' $MANIFEST
+          sed -i '/<application/i \    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />' $MANIFEST
+          # Add requestLegacyExternalStorage to <application>
+          sed -i 's/<application/<application android:requestLegacyExternalStorage="true"/' $MANIFEST
+          echo "Android Manifest updated with storage permissions."
+
       - name: Generate mobile icons
         if: matrix.settings.mobile
         run: npx tauri icon src-tauri/icons/icon.png
