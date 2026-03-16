@@ -14,14 +14,17 @@ jobs:
         settings:
           - platform: macos-latest
             args: ""
+            tauriScript: "npx tauri"
           - platform: ubuntu-22.04
             args: ""
+            tauriScript: "npx tauri"
           - platform: windows-latest
             args: ""
+            tauriScript: "npx tauri"
           - platform: ubuntu-22.04 # Android Build
             args: "--apk"
             mobile: true
-            tauriScript: "npx tauri android init --ci && npx tauri android"
+            tauriScript: "npx tauri android"
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -63,6 +66,10 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm install
+
+      - name: Initialize Android project
+        if: matrix.settings.mobile
+        run: npx tauri android init --ci
 
       - name: Build the app
         uses: tauri-apps/tauri-action@v0
