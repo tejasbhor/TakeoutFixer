@@ -21,6 +21,7 @@ jobs:
           - platform: ubuntu-22.04 # Android Build
             args: ""
             mobile: true
+            tauriScript: "npm run tauri android build -- --apk"
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -75,14 +76,14 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.settings.args }}
-          mobile: ${{ matrix.settings.mobile || false }}
+          tauriScript: ${{ matrix.settings.tauriScript || 'npm run tauri build' }}
 
       - name: Upload Android Artifacts
         if: matrix.settings.mobile
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            src-tauri/gen/android/app/build/outputs/apk/universal/release/*.apk
-            src-tauri/gen/android/app/build/outputs/bundle/universalRelease/*.aab
+            src-tauri/gen/android/app/build/outputs/apk/**/release/*.apk
+            src-tauri/gen/android/app/build/outputs/bundle/**Release/*.aab
           tag_name: ${{ github.ref_name }}
           draft: true

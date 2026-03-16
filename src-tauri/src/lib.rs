@@ -37,7 +37,7 @@ pub fn run() {
             #[cfg(target_os = "macos")]
             {
                 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
-                let _ = apply_vibrancy(&_window, NSVisualEffectMaterial::UnderWindowBackground, None, None);
+                let _ = apply_vibrancy(&window, NSVisualEffectMaterial::UnderWindowBackground, None, None);
             }
 
             Ok(())
