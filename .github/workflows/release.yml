@@ -19,9 +19,9 @@ jobs:
           - platform: windows-latest
             args: ""
           - platform: ubuntu-22.04 # Android Build
-            args: ""
+            args: "--apk"
             mobile: true
-            tauriScript: "npm run tauri android build -- --apk"
+            tauriScript: "npm run tauri android"
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -76,7 +76,7 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.settings.args }}
-          tauriScript: ${{ matrix.settings.tauriScript || 'npm run tauri build' }}
+          tauriScript: ${{ matrix.settings.tauriScript }}
 
       - name: Upload Android Artifacts
         if: matrix.settings.mobile
