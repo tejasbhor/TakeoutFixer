@@ -25,6 +25,7 @@ jobs:
             args: "--apk"
             mobile: true
             tauriScript: "npx tauri android"
+            sign: true
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -91,12 +92,30 @@ jobs:
         env:
           NDK_HOME: ${{ steps.setup-android.outputs.sdk-path }}/ndk/25.1.8937393
 
+      - name: Sign Android APK
+        if: matrix.settings.sign
+        run: |
+          # Generate a temporary keystore for this release
+          keytool -genkey -v -keystore release.keystore \
+            -alias alias_name -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass password -keypass password \
+            -dname "CN=TakeoutFixer, OU=Dev, O=TejasBhor, L=Mumbai, S=MH, C=IN"
+          
+          # Find the unsigned APK
+          UNSIGNED_APK=$(find src-tauri/gen/android/app/build/outputs/apk/universal/release/ -name "*-unsigned.apk" | head -n 1)
+          SIGNED_APK=${UNSIGNED_APK%-unsigned.apk}.apk
+          
+          # Sign the APK
+          apksigner sign --ks release.keystore --ks-pass pass:password --out "$SIGNED_APK" "$UNSIGNED_APK"
+          echo "Signed APK created at $SIGNED_APK"
+
       - name: Upload Android Artifacts
         if: matrix.settings.mobile
         uses: softprops/action-gh-release@v2
         with:
           files: |
             src-tauri/gen/android/app/build/outputs/apk/**/release/*.apk
+            !src-tauri/gen/android/app/build/outputs/apk/**/release/*-unsigned.apk
             src-tauri/gen/android/app/build/outputs/bundle/**Release/*.aab
           tag_name: ${{ github.ref_name }}
           draft: true
