@@ -11,8 +11,5 @@ export const APP_CONFIG = {
         terms: "#",
         privacy: "#"
     },
-    badges: [
-        { label: "Stable", color: "emerald" },
-        { label: "WinUI 3 Ready", color: "blue" }
-    ]
+    badges: []
 };

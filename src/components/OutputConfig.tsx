@@ -41,7 +41,7 @@ export default function OutputConfig({
           disabled={!config.outputPath}
           onClick={() => onStart(config)}
           className={cn(
-            "fluent-btn-primary flex items-center gap-2 px-8 h-[44px] text-sm font-bold shadow-xl transition-all hover:scale-105 active:scale-95",
+            "fluent-btn-primary-lg flex items-center gap-3",
             !config.outputPath && "opacity-50 cursor-not-allowed bg-zinc-700 shadow-none grayscale scale-100"
           )}
         >

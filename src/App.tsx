@@ -248,46 +248,36 @@ export default function App() {
         sidebarCollapsed ? "w-16" : "w-64"
       )}>
         <div className={cn(
-            "pt-6 px-4 mb-8 flex flex-col",
-            sidebarCollapsed ? "items-center" : "items-start"
+            "pt-6 px-4 mb-10 flex items-center",
+            sidebarCollapsed ? "justify-center" : "gap-3"
         )}>
-          <div className="flex items-center gap-3 w-full mb-4">
-            <button 
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="hamburger-btn"
-              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              <Menu className="w-4 h-4" />
-            </button>
+          <button 
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="hamburger-btn"
+            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <Menu className="w-4 h-4" />
+          </button>
 
-            {!sidebarCollapsed && (
-              <div className="flex items-center gap-2 overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500">
-                <div className="overflow-hidden">
-                  <h1 className="font-extrabold text-[10px] leading-tight truncate" style={{ color: 'var(--text-primary)' }}>{APP_CONFIG.name}</h1>
-                  <p className="text-[7px] uppercase tracking-[0.2em] text-zinc-500 font-bold truncate opacity-60">Metadata Sync</p>
-                </div>
+          {!sidebarCollapsed && (
+            <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-xl overflow-hidden bg-white/5 border border-white/10 shrink-0">
+                <img src={Logomark} alt="Logo" className="w-[75%] h-[75%] object-contain" />
               </div>
-            )}
-          </div>
-
-          <div className={cn(
-            "flex items-center transition-all duration-500",
-            sidebarCollapsed ? "justify-center w-full" : "px-2"
-          )}>
-            <div 
-              className={cn(
-                "rounded-xl flex items-center justify-center shadow-2xl transition-all duration-500 overflow-hidden bg-white/5 border border-white/10",
-                sidebarCollapsed ? "w-8 h-8" : "w-10 h-10"
-              )}
-            >
-              <img src={Logomark} alt="TakeoutFixer Logo" className="w-[80%] h-[80%] object-contain" />
+              <div className="overflow-hidden">
+                <h1 className="font-extrabold text-[11px] leading-tight truncate" style={{ color: 'var(--text-primary)' }}>{APP_CONFIG.name}</h1>
+                <p className="text-[7.5px] uppercase tracking-[0.2em] text-zinc-500 font-bold truncate opacity-60">Metadata Sync</p>
+              </div>
             </div>
-            {!sidebarCollapsed && (
-              <div className="ml-3 animate-in fade-in zoom-in-95 duration-500">
-                <span className="text-[10px] font-black tracking-widest text-[#8e44ff] uppercase">Release Ready</span>
-              </div>
-            )}
-          </div>
+          )}
+          
+          {sidebarCollapsed && (
+            <div className="fixed left-4 top-[88px] flex flex-col items-center gap-4">
+               <div className="w-8 h-8 rounded-xl flex items-center justify-center shadow-2xl overflow-hidden bg-white/5 border border-white/10">
+                 <img src={Logomark} alt="Logo" className="w-[75%] h-[75%] object-contain" />
+               </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-1 flex-1 px-3">

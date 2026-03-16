@@ -14,6 +14,7 @@ import {
   FileText
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import Logomark from "../assets/logo.png";
 
 interface SettingsPageProps {
   theme: 'dark' | 'light' | 'auto';
@@ -135,27 +136,16 @@ export default function SettingsPage({
           <div className="settings-group">
             <div className="p-6 flex items-center gap-6 border-b border-white/[0.05]">
                 <div 
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
-                    style={{ backgroundColor: 'var(--fluent-accent)', boxShadow: '0 8px 16px var(--ring-focus)' }}
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg bg-white/5 border border-white/10"
+                    style={{ boxShadow: '0 8px 16px var(--ring-focus)' }}
                 >
-                    <Monitor className="w-8 h-8 text-white" />
+                    <img src={Logomark} alt="Logo" className="w-[70%] h-[70%] object-contain" />
                 </div>
                 <div>
                     <h4 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{APP_CONFIG.name}</h4>
                     <p className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>Version {APP_CONFIG.version} (Build {APP_CONFIG.buildId})</p>
                     <div className="flex gap-2">
-                        <span className="px-2 py-0.5 rounded bg-zinc-500/10 text-zinc-500 text-[9px] font-bold uppercase tracking-wider border border-zinc-500/20 capitalize">{platform}</span>
-                        {APP_CONFIG.badges.map(badge => (
-                            <span 
-                                key={badge.label}
-                                className={cn(
-                                    "px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border",
-                                    badge.color === 'emerald' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-blue-500/10 text-blue-500 border-blue-500/20"
-                                )}
-                            >
-                                {badge.label}
-                            </span>
-                        ))}
+                        <span className="px-2 py-0.5 rounded bg-[#8e44ff]/10 text-[#8e44ff] text-[9px] font-bold uppercase tracking-wider border border-[#8e44ff]/20 capitalize">{platform}</span>
                     </div>
                 </div>
                 <button 

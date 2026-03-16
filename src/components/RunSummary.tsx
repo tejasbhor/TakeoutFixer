@@ -46,28 +46,24 @@ export default function RunSummaryView({ summary, onReset }: RunSummaryProps) {
                 value={summary.processedOk} 
                 icon={<CheckCircle2 className="w-5 h-5" />}
                 color="text-emerald-500"
-                bg="bg-emerald-500/10"
             />
             <SummaryCard 
                 label="Space Saved" 
                 value={summary.duplicatesRemoved} 
                 icon={<Trash2 className="w-5 h-5" />}
                 color="text-blue-500"
-                bg="bg-blue-500/10"
             />
             <SummaryCard 
                 label="Warnings Found" 
                 value={summary.errors} 
                 icon={<AlertTriangle className="w-5 h-5" />}
                 color="text-amber-500"
-                bg="bg-amber-500/10"
             />
             <SummaryCard 
                 label="Process Time" 
                 value={`${summary.elapsedSeconds.toFixed(1)}s`} 
                 icon={<Clock className="w-5 h-5" />}
                 color="text-purple-500"
-                bg="bg-purple-500/10"
             />
         </div>
 
@@ -97,7 +93,7 @@ export default function RunSummaryView({ summary, onReset }: RunSummaryProps) {
       <div className="flex justify-center py-2">
         <button 
             onClick={onReset}
-            className="fluent-btn-primary flex items-center gap-3 px-10 h-[44px] text-sm font-bold shadow-xl hover:scale-105 active:scale-95 transition-all"
+            className="fluent-btn-primary-lg flex items-center gap-4"
         >
             <RefreshCcw className="w-4 h-4" />
             <span>Process More Archives</span>
@@ -154,15 +150,21 @@ export default function RunSummaryView({ summary, onReset }: RunSummaryProps) {
   );
 }
 
-function SummaryCard({ label, value, icon, color, bg }: { label: string, value: number|string, icon: React.ReactNode, color: string, bg: string }) {
+function SummaryCard({ label, value, icon, color }: { label: string, value: number|string, icon: React.ReactNode, color: string }) {
     return (
-        <div className="p-6 rounded-3xl flex items-center gap-6 transition-all group" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)' }}>
-            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg", bg, color)}>
+        <div className="fluent-card flex items-center gap-4 group">
+            <div 
+                className={cn(
+                  "w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:bg-[#8e44ff] group-hover:text-white",
+                  "bg-white/5 border border-white/5",
+                  color
+                )}
+            >
                 {icon}
             </div>
-            <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)' }}>{label}</p>
-                <p className={cn("text-2xl font-black tracking-tight", color)} style={!color.includes('emerald') && !color.includes('amber') && !color.includes('rose') ? { color: 'var(--text-primary)' } : {}}>{value}</p>
+            <div className="text-left">
+                <h4 className="text-[10px] font-bold uppercase tracking-widest leading-none mb-1.5" style={{ color: 'var(--text-muted)' }}>{label}</h4>
+                <p className={cn("text-lg font-black tracking-tight leading-none", color)} style={!color.includes('emerald') && !color.includes('amber') && !color.includes('rose') ? { color: 'var(--text-primary)' } : {}}>{value}</p>
             </div>
         </div>
     )
