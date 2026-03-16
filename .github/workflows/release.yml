@@ -21,7 +21,7 @@ jobs:
           - platform: ubuntu-22.04 # Android Build
             args: "--apk"
             mobile: true
-            tauriScript: "npm run tauri android"
+            tauriScript: "npx tauri android init --ci && npx tauri android"
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
