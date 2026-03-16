@@ -1,0 +1,200 @@
+    Checking takeout-fixer v1.0.0 (D:\TakeoutFixer\src-tauri)
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `lazy_static`
+ --> src\commands.rs:9:1
+  |
+9 | lazy_static::lazy_static! {
+  | ^^^^^^^^^^^ use of unresolved module or unlinked crate `lazy_static`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `windows_sys`
+   --> src\pipeline\stage1_validator.rs:241:13
+    |
+241 |             windows_sys::Win32::Storage::FileSystem::GetDiskFreeSpaceExW(
+    |             ^^^^^^^^^^^ use of unresolved module or unlinked crate `windows_sys`
+    |
+    = help: if you wanted to use a crate named `windows_sys`, use `cargo add windows_sys` to add it to your `Cargo.toml`
+
+error[E0425]: cannot find value `CANCEL_FLAG` in this scope
+  --> src\commands.rs:20:5
+   |
+20 |     CANCEL_FLAG.store(false, Ordering::Relaxed);
+   |     ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `CANCEL_FLAG` in this scope
+  --> src\commands.rs:32:28
+   |
+32 |     let flag = Arc::clone(&CANCEL_FLAG);
+   |                            ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `CANCEL_FLAG` in this scope
+  --> src\commands.rs:47:5
+   |
+47 |     CANCEL_FLAG.store(true, Ordering::Relaxed);
+   |     ^^^^^^^^^^^ not found in this scope
+
+warning: unused import: `bail`
+ --> src\pipeline\stage1_validator.rs:2:14
+  |
+2 | use anyhow::{bail, Context, Result};
+  |              ^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `PathBuf`
+ --> src\pipeline\stage3_indexer.rs:1:23
+  |
+1 | use std::path::{Path, PathBuf};
+  |                       ^^^^^^^
+
+warning: unused import: `FileCategory`
+ --> src\pipeline\stage4_flattener.rs:5:20
+  |
+5 | use crate::types::{FileCategory, FileEntry, MediaFile, MatchStrategy};
+  |                    ^^^^^^^^^^^^
+
+warning: unused import: `Path`
+ --> src\pipeline\stage5_matcher.rs:1:17
+  |
+1 | use std::path::{Path, PathBuf};
+  |                 ^^^^
+
+warning: unused import: `tracing::debug`
+ --> src\pipeline\stage5_matcher.rs:3:5
+  |
+3 | use tracing::debug;
+  |     ^^^^^^^^^^^^^^
+
+warning: unused import: `debug`
+ --> src\pipeline\stage6_parser.rs:4:15
+  |
+4 | use tracing::{debug, warn};
+  |               ^^^^^
+
+warning: unused import: `Read`
+ --> src\pipeline\stage7_exif_writer.rs:2:15
+  |
+2 | use std::io::{Read, Write};
+  |               ^^^^
+
+warning: unused import: `Context`
+ --> src\pipeline\stage7_exif_writer.rs:4:14
+  |
+4 | use anyhow::{Context, Result};
+  |              ^^^^^^^
+
+warning: unused import: `debug`
+ --> src\pipeline\stage7_exif_writer.rs:5:15
+  |
+5 | use tracing::{debug, warn};
+  |               ^^^^^
+
+warning: unused import: `create_dir_all`
+ --> src\pipeline\stage8_output.rs:2:15
+  |
+2 | use std::fs::{create_dir_all, File};
+  |               ^^^^^^^^^^^^^^
+
+warning: unused imports: `DuplicateAction` and `TimestampSource`
+ --> src\pipeline\stage8_output.rs:8:43
+  |
+8 | use crate::types::{MediaFile, OutputMode, DuplicateAction, RunSummary, TimestampSource};
+  |                                           ^^^^^^^^^^^^^^^              ^^^^^^^^^^^^^^^
+
+warning: unused import: `Path`
+  --> src\pipeline\mod.rs:10:17
+   |
+10 | use std::path::{Path, PathBuf};
+   |                 ^^^^
+
+warning: unused import: `WarningKind`
+  --> src\pipeline\mod.rs:16:58
+   |
+16 | use crate::types::{JobConfig, ProgressEvent, RunSummary, WarningKind};
+   |                                                          ^^^^^^^^^^^
+
+warning: unused import: `Manager`
+ --> src\commands.rs:1:24
+  |
+1 | use tauri::{AppHandle, Manager, Window};
+  |                        ^^^^^^^
+
+warning: unused import: `AtomicBool`
+ --> src\commands.rs:3:25
+  |
+3 | use std::sync::atomic::{AtomicBool, Ordering};
+  |                         ^^^^^^^^^^
+
+error[E0599]: no method named `emit` found for struct `tauri::Window<R>` in the current scope
+   --> src\commands.rs:28:34
+    |
+ 28 |             let _ = window_clone.emit("progress", event);
+    |                                  ^^^^
+    |
+   ::: C:\Users\tejas\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\lib.rs:952:6
+    |
+952 |   fn emit<S: Serialize + Clone>(&self, event: &str, payload: S) -> Result<()> {
+    |      ---- the method is available for `tauri::Window` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+help: there is a method `emit_to` with a similar name, but with different arguments
+   --> C:\Users\tejas\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tauri-2.10.3\src\lib.rs:987:3
+    |
+987 | /   fn emit_to<I, S>(&self, target: I, event: &str, payload: S) -> Result<()>
+988 | |   where
+989 | |     I: Into<EventTarget>,
+990 | |     S: Serialize + Clone,
+    | |_________________________^
+help: trait `Emitter` which provides `emit` is implemented but not in scope; perhaps you want to import it
+    |
+  1 + use tauri::Emitter;
+    |
+
+warning: use of deprecated method `tauri_plugin_shell::Shell::<R>::open`: Use tauri-plugin-opener instead.
+  --> src\commands.rs:54:17
+   |
+54 |     app.shell().open(path, None).map_err(|e| e.to_string())?;
+   |                 ^^^^
+   |
+   = note: `#[warn(deprecated)]` on by default
+
+warning: unused variable: `meta`
+  --> src\pipeline\stage7_exif_writer.rs:72:44
+   |
+72 | fn embed_jpeg(input: &Path, output: &Path, meta: &ResolvedMetadata) -> Result<()> {
+   |                                            ^^^^ help: if this is intentional, prefix it with an underscore: `_meta`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `meta`
+  --> src\pipeline\stage7_exif_writer.rs:80:43
+   |
+80 | fn embed_png(input: &Path, output: &Path, meta: &ResolvedMetadata) -> Result<()> {
+   |                                           ^^^^ help: if this is intentional, prefix it with an underscore: `_meta`
+
+warning: unused variable: `meta`
+  --> src\pipeline\stage7_exif_writer.rs:94:44
+   |
+94 | fn embed_tiff(input: &Path, output: &Path, meta: &ResolvedMetadata) -> Result<()> {
+   |                                            ^^^^ help: if this is intentional, prefix it with an underscore: `_meta`
+
+warning: unused variable: `meta`
+  --> src\pipeline\stage7_exif_writer.rs:99:45
+   |
+99 | fn embed_video(input: &Path, output: &Path, meta: &ResolvedMetadata) -> Result<()> {
+   |                                             ^^^^ help: if this is intentional, prefix it with an underscore: `_meta`
+
+error[E0502]: cannot borrow `match_res.matched_files` as immutable because it is also borrowed as mutable
+  --> src\pipeline\mod.rs:81:74
+   |
+74 |     for (i, media) in match_res.matched_files.iter_mut().enumerate() {
+   |                       ----------------------------------------------
+   |                       |
+   |                       mutable borrow occurs here
+   |                       mutable borrow later used here
+...
+81 |             emit_progress(&progress_tx, 6, "Metadata Parsing", i as u64, match_res.matched_files.len() as u64, None);
+   |                                                                          ^^^^^^^^^^^^^^^^^^^^^^^ immutable borrow occurs here
+
+Some errors have detailed explanations: E0425, E0433, E0502, E0599.
+For more information about an error, try `rustc --explain E0425`.
+warning: `takeout-fixer` (lib) generated 20 warnings
+error: could not compile `takeout-fixer` (lib) due to 7 previous errors; 20 warnings emitted

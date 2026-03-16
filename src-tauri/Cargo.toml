@@ -1,0 +1,81 @@
+[package]
+name = "takeout-fixer"
+version = "1.0.0"
+description = "TakeoutFixer — Repair Google Takeout photo archives"
+authors = ["TakeoutFixer"]
+edition = "2021"
+
+[lib]
+name = "takeout_fixer_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# ZIP extraction
+zip = "2"
+
+# Hashing (xxHash for dedup)
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
+
+# EXIF reading and writing
+kamadak-exif = "0.5"
+img-parts = "0.3"
+
+# Parallelism
+rayon = "1"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "1"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# String distance (fuzzy matching)
+strsim = "0.11"
+
+# Regex for filename pattern matching
+regex = "1"
+
+# Atomic operations
+atomic = "0.6"
+
+# File time setting
+filetime = "0.2"
+
+# Walkdir for directory traversal
+walkdir = "2"
+
+# HTML stripping
+ammonia = "4"
+lazy_static = "1.5.0"
+windows-sys = { version = "0.61.2", features = ["Win32_Storage_FileSystem"] }
+tauri-plugin-notification = "2.3.3"
+tauri-plugin-process = "2.3.1"
+tauri-plugin-updater = "2.10.0"
+little_exif = "0.6.23"
+libc = "0.2"
+window-vibrancy = "0.5.2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

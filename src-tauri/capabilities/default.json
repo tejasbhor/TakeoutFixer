@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/capability.schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-progress-bar",
+    "dialog:default",
+    "fs:default",
+    "shell:default",
+    "opener:default",
+    "notification:default",
+    "process:allow-restart"
+  ]
+}
