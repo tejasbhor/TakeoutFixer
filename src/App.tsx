@@ -49,14 +49,12 @@ export default function App() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light' | 'auto'>('dark');
   const [micaEnabled, setMicaEnabled] = useState(true);
-  const [platform, setPlatform] = useState<'windows' | 'macos' | 'linux' | 'android' | 'ios' | 'other'>('windows');
+  const [platform, setPlatform] = useState<'windows' | 'macos' | 'linux' | 'other'>('windows');
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent.toLowerCase();
-    if (userAgent.includes('android')) setPlatform('android');
-    else if (userAgent.includes('iphone') || userAgent.includes('ipad')) setPlatform('ios');
-    else if (userAgent.includes('win')) setPlatform('windows');
+    if (userAgent.includes('win')) setPlatform('windows');
     else if (userAgent.includes('mac')) setPlatform('macos');
     else if (userAgent.includes('linux')) setPlatform('linux');
     else setPlatform('other');

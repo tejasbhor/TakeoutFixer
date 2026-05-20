@@ -3,7 +3,6 @@ pub mod pipeline;
 pub mod commands;
 pub mod history;
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // Initialize tracing (suppress noisy little_exif logs)
     tracing_subscriber::fmt()

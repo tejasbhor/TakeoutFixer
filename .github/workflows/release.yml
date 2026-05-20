@@ -11,44 +11,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        settings:
-          - platform: ubuntu-22.04 # Android Build
-            args: "--apk"
-            mobile: true
-            tauriScript: "npx tauri android"
-            sign: true
-
-    runs-on: ${{ matrix.settings.platform }}
+        platform: [macos-latest, ubuntu-22.04, windows-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install dependencies (Ubuntu only)
-        if: matrix.settings.platform == 'ubuntu-22.04' && !matrix.settings.mobile
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
         with:
-          targets: ${{ matrix.settings.mobile && 'aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android' || '' }}
-
-      - name: Setup Java
-        if: matrix.settings.mobile
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Android setup
-        id: setup-android
-        if: matrix.settings.mobile
-        uses: android-actions/setup-android@v3
-
-      - name: Install NDK
-        if: matrix.settings.mobile
-        run: sdkmanager "ndk;25.1.8937393"
+          workspaces: './src-tauri -> target'
 
       - name: Sync node version and setup cache
         uses: actions/setup-node@v4
@@ -59,74 +40,15 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
-      - name: Initialize Android project
-        if: matrix.settings.mobile
-        run: npx tauri android init --ci
-
-      - name: Inject Android Permissions
-        if: matrix.settings.mobile
-        run: |
-          MANIFEST="src-tauri/gen/android/app/src/main/AndroidManifest.xml"
-          # Add permissions before the <application> tag
-          sed -i '/<application/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />' $MANIFEST
-          sed -i '/<application/i \    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' $MANIFEST
-          sed -i '/<application/i \    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />' $MANIFEST
-          # Add requestLegacyExternalStorage to <application>
-          sed -i 's/<application/<application android:requestLegacyExternalStorage="true"/' $MANIFEST
-          echo "Android Manifest updated with storage permissions."
-
-      - name: Generate mobile icons
-        if: matrix.settings.mobile
-        run: npx tauri icon src-tauri/icons/icon.png
-
       - name: Build the app
-        if: "!matrix.settings.mobile"
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'TakeoutFixer v__VERSION__'
-          releaseBody: 'Ultimate Release: Download TakeoutFixer for Desktop and Android.'
+          releaseBody: 'See the assets below to download the latest version of TakeoutFixer for your platform.'
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.settings.args }}
-          tauriScript: ${{ matrix.settings.tauriScript }}
-
-      - name: Build Android app
-        if: matrix.settings.mobile
-        run: npx tauri android build --apk
-        env:
-          NDK_HOME: ${{ runner.os == 'Linux' && '/usr/local/lib/android/sdk/ndk/25.1.8937393' || '' }}
-
-      - name: Sign Android APK
-        if: matrix.settings.sign
-        run: |
-          # Use ANDROID_HOME which is set by the setup-android action
-          BUILD_TOOLS_VERSION=$(ls $ANDROID_HOME/build-tools | sort -V | tail -n 1)
-          export PATH=$PATH:$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION
-          
-          # Generate a temporary keystore for this release
-          keytool -genkey -v -keystore release.keystore \
-            -alias alias_name -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass password -keypass password \
-            -dname "CN=TakeoutFixer, OU=Dev, O=TejasBhor, L=Mumbai, S=MH, C=IN"
-          
-          # Find the unsigned APK
-          UNSIGNED_APK=$(find src-tauri/gen/android/app/build/outputs/apk/universal/release/ -name "*-unsigned.apk" | head -n 1)
-          SIGNED_APK=${UNSIGNED_APK%-unsigned.apk}.apk
-          
-          # Sign the APK
-          apksigner sign --ks release.keystore --ks-pass pass:password --out "$SIGNED_APK" "$UNSIGNED_APK"
-          echo "Signed APK created at $SIGNED_APK"
-
-      - name: Upload Android Artifacts
-        if: matrix.settings.mobile
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            src-tauri/gen/android/app/build/outputs/apk/**/release/*.apk
-            !src-tauri/gen/android/app/build/outputs/apk/**/release/*-unsigned.apk
-            src-tauri/gen/android/app/build/outputs/bundle/**Release/*.aab
-          tag_name: ${{ github.ref_name }}
-          draft: true
